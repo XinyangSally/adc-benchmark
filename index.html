@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ArchRAG</title>
+  <title>Abstractive Document Comprehension: A Comprehensive Benchmark for RAG-based Question Answering</title>
 
   <link rel="stylesheet" href="./static/css/bulma.min.css">
   <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
@@ -72,6 +72,16 @@
                   <span>Code</span>
                   </a>
               </span>
+              <!-- Data Link. -->
+              <span class="link-block">
+                <a href="#"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="fas fa-database"></i>
+                  </span>
+                  <span>Data</span>
+                  </a>
+              </span>
             </div>
           </div>
         </div>
@@ -110,15 +120,13 @@
 </section>
 
 
-<!-- ADC Dataset -->
+<!-- ADC Benchmark -->
 <section class="section">
   <div class="container is-max-desktop">
 
     <!-- 大标题 -->
     <div class="columns is-centered has-text-centered">
-      <h2 class="title is-2">ADC Dataset</h2>
-      
-
+      <h2 class="title is-2">ADC Benchmark</h2>
     </div>
 
     <!-- ───────────── Overview ───────────── -->
@@ -128,10 +136,8 @@
 
         <div class="content has-text-justified">
           <img class="columns is-centered has-text-centered"
-               src="./static/images/alpha.png"
-               alt="ADC Framework" width="95%" style="margin:0 auto">
-          
-
+              src="./static/images/alpha.png"
+              alt="ADC Framework" width="95%" style="margin:0 auto">
 
           <p>
             ADC is a benchmark for <em>abstractive document comprehension</em> in
@@ -168,11 +174,8 @@
 
         <div class="content has-text-justified">
           <img class="columns is-centered has-text-centered"
-               src="./static/images/workflow.png"
-               alt="ADC Curation Pipeline" width="95%" style="margin:0 auto">
-          
-
-
+              src="./static/images/workflow.png"
+              alt="ADC Curation Pipeline" width="95%" style="margin:0 auto">
           <p>
             ADC is constructed through a three-stage curation pipeline, as illustrated above.
             The pipeline converts heterogeneous source materials into abstractive QA pairs
@@ -186,21 +189,10 @@
               <b>Step 1: Data Collection.</b>
               Original documents are collected from OpenReview, focusing on ICLR 2023–2025,
               together with the tagged corpus of publications of Epstein et al., and news articles
-              downloaded through the
-              <a href="https://mediastack.com/" target="_blank">mediastack API</a>,
-              yielding 700+ paper documents and 1,500+ news articles.
-              4,700+ comments are gathered separately from OpenReview reviews for ICLR papers
-              (including reviewer comments: summary, strengths, and weaknesses), tags from the
+              downloaded through the mediastack API, yielding 700+ paper documents and 1,500+ news articles.
+              4,700+ comments are gathered separately from OpenReview reviews for ICLR papers, tags from the
               corpus of publications of Epstein et al., and metadata associated with the mediastack
               news records.
-              
-
-
-              We then perform <em>content extraction</em> on both the original documents and the
-              matched comments. Specifically, for PDF documents, we use MinerU to parse the
-              document text, whereas for HTML documents, we extract the page content directly.
-              We finally align each comment with its corresponding source document and merge all
-              documents into a corpus \(D\).
             </li>
 
             <!-- Step 2 -->
@@ -208,55 +200,135 @@
               <b>Step 2: QA Pairs Generation.</b>
               We use the processed materials, along with <em>task-specific guidance</em>, to
               generate initial QA pairs with an LLM. We use GPT-4o throughout the ADC curation
-              pipeline for generation and refinement. The LLM input includes the task guidance,
-              the matched comment text, the content of the original documents, and a small number
-              of task-specific examples. Each question \(q\) is required to match the target task,
-              and its answer \(T\) is represented as a <em>topic set</em> extracted from matched
-              comments, tags, and other summary-like context aligned to the source documents,
-              with 11.35 topics on average.
-              
-
-
-              We design 5 common abstractive task types, including
-              <b>summarization</b>, <b>pair comparison</b>, <b>multi-target comparison</b>,
-              <b>enumeration</b>, and <b>temporal reasoning</b>,
-              and instantiate a different prompt template for each type.
+              pipeline for generation and refinement.
             </li>
 
             <!-- Step 3 -->
             <li>
               <b>Step 3: QA Pairs Refinement.</b>
               We refine the generated question and the topic-set answer separately.
-              <ul>
-                <li>
-                  <b>(1) Question refinement.</b>
-                  We perform <em>evidence alignment</em> by checking whether the question can be
-                  answered from the selected evidence documents alone. To do so, we retrieve 10
-                  related but non-evidence documents as probes and use an LLM to judge whether the
-                  question depends on information outside the designated evidence scope. We then
-                  revise the <em>question intent</em>, enforce consistency with the assigned task
-                  type, and, for comparison questions, make the comparison dimension explicit.
-                </li>
-                <li>
-                  <b>(2) Answer refinement.</b>
-                  We first perform topic enrichment: we retrieve 5 similar questions to obtain
-                  candidate supplemental topics, then use an LLM to judge — based on the original
-                  question, the original evidence, and the matched comment — whether each candidate
-                  topic should be included in \(T\). Accepted topics are added to \(T\), while
-                  rejected topics are recorded in the <em>hallucination set</em> \(H\) for later
-                  evaluation. We next perform <em>deduplication</em> on \(T\) by using an LLM to
-                  merge or remove repeated and semantically equivalent topics on the enriched topic
-                  set. This stage turns model-generated drafts into curated benchmark samples.
-                  After manual review and filtering, we obtain the final ADC dataset.
-                </li>
-              </ul>
             </li>
           </ul>
-          
-
         </div>
         
+        <div style="overflow-x: auto;">
+          <table class="table is-bordered is-striped is-hoverable is-fullwidth"
+                style="text-align: center; font-size: 0.9rem; white-space: nowrap;">
+            <thead>
+              <tr>
+                <th>Task Type</th>
+                <th>#Q</th>
+                <th>#Docs</th>
+                <th>Corpus Tok.</th>
+                <th><i>AM</i> Tok.</th>
+                <th># <i>C</i></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Single-Sum</td>
+                <td>422</td>
+                <td>422</td>
+                <td>9,681,570</td>
+                <td>322,719</td>
+                <td>30</td>
+              </tr>
+              <tr>
+                <td>Pair-Comp</td>
+                <td>99</td>
+                <td>54</td>
+                <td>1,565,393</td>
+                <td>597,178</td>
+                <td>5</td>
+              </tr>
+              <tr>
+                <td>Multi-Comp</td>
+                <td>42</td>
+                <td>59</td>
+                <td>1,670,693</td>
+                <td>457,473</td>
+                <td>5</td>
+              </tr>
+              <tr>
+                <td>Enum</td>
+                <td>150</td>
+                <td>63</td>
+                <td>1,728,257</td>
+                <td>427,368</td>
+                <td>7</td>
+              </tr>
+              <tr>
+                <td>Temp</td>
+                <td>156</td>
+                <td>1,579</td>
+                <td>1,434,193</td>
+                <td>120,514</td>
+                <td>7</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td><strong>Total</strong></td>
+                <td><strong>869</strong></td>
+                <td><strong>2,096</strong></td>
+                <td><strong>16,080,106</strong></td>
+                <td><strong>347,963</strong></td>
+                <td><strong>54</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- Evaluation -->
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <!-- 大标题 -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-2">Evaluation Method</h2>
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <div class="content has-text-justified">
+
+          <p>
+            Our core idea is to evaluate ADC answers in the same spirit as grading a
+            composition or a reading-comprehension response by checking whether the answer
+            covers the required key points. For ADC, a good answer should cover the
+            reference topics in \(T\) as completely as possible and avoid hallucinated
+            content.
+          </p>
+          <p>
+            We then compute topic precision, topic recall, and topic F1 as
+          </p>
+          \[
+            \text{T-Prec} = \frac{|S(q, y)|}{\max(1,\,|\hat{T}(q, y)|)},
+            \quad
+            \text{T-Rec} = \frac{|C(q, y)|}{|T|},
+            \quad
+            \text{T-F1} = \frac{2\,\text{T-Prec}\cdot\text{T-Rec}}{\text{T-Prec}+\text{T-Rec}}.
+          \]
+          <p>
+            Based on \(C_H(q, y)\), we define a topic-level hallucination score and a
+            response-level hallucination rate as
+          </p>
+          \[
+            H_{\mathrm{topic}}(q, y) = \frac{|C_H(q, y)|}{|H|},
+            \quad
+            H_{\mathrm{resp}}(q, y) = \mathbb{I}\!\left[|C_H(q, y)| > 0\right].
+          \]
+
+          <img class="columns is-centered has-text-centered"
+              src="./static/images/experiment.png"
+              alt="ADC Framework" width="95%" style="margin:0 auto">
+        </div>
       </div>
     </div>
 
@@ -277,7 +349,6 @@
     <!-- ───────────── Table 1: Retrieval Settings ───────────── -->
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h3 class="title is-4">Performance under Retrieval Settings</h3>
         <div class="content has-text-justified">
           <p>
             Performance comparison of representative RAG methods on ADC under the three retrieval
@@ -291,7 +362,7 @@
         <!-- 横向滚动容器，适配窄屏 -->
         <div style="overflow-x: auto;">
           <table class="table is-bordered is-striped is-hoverable is-fullwidth"
-                 style="text-align: center; font-size: 0.9rem; white-space: nowrap;">
+                style="text-align: center; font-size: 0.9rem; white-space: nowrap;">
             <thead>
               <tr>
                 <th rowspan="2" style="vertical-align: middle; text-align: left;">Method</th>
@@ -370,7 +441,7 @@
                 <td>-</td><td>-</td><td>-</td>
               </tr>
               <tr>
-                <td style="text-align: left;"><strong>ArchRAG</strong></td>
+                <td style="text-align: left;">ArchRAG</td>
                 <td>-</td><td>-</td><td>-</td>
                 <td>-</td><td>-</td><td>-</td>
                 <td>-</td><td>-</td><td>-</td>
@@ -395,147 +466,6 @@
         </div>
       </div>
     </div>
-
-    <!-- ───────────── Table 2: Task Types ───────────── -->
-    <div class="columns is-centered" style="margin-top: 2rem;">
-      <div class="column is-full-width">
-        <h3 class="title is-4">Performance across Task Types</h3>
-        <div class="content has-text-justified">
-          <p>
-            Performance comparison of representative RAG methods on ADC across the five task
-            types, denoted by <span style="font-variant: small-caps;">Single-Sum</span>,
-            <span style="font-variant: small-caps;">Pair-Comp</span>,
-            <span style="font-variant: small-caps;">Multi-Comp</span>,
-            <span style="font-variant: small-caps;">Enum</span>, and
-            <span style="font-variant: small-caps;">Temp</span>.
-            TF1, HT, and HR denote \(\text{T-F1}\), \(H_{\mathrm{topic}}\), and
-            \(H_{\mathrm{resp}}\), respectively.
-            The best and second-best results are marked in <strong>bold</strong> and
-            <u>underlined</u>, respectively.
-          </p>
-        </div>
-
-        <div style="overflow-x: auto;">
-          <table class="table is-bordered is-striped is-hoverable is-fullwidth"
-                 style="text-align: center; font-size: 0.9rem; white-space: nowrap;">
-            <thead>
-              <tr>
-                <th rowspan="2" style="vertical-align: middle; text-align: left;">Method</th>
-                <th colspan="3">Single-Sum</th>
-                <th colspan="3">Pair-Comp</th>
-                <th colspan="3">Multi-Comp</th>
-                <th colspan="3">Enum</th>
-                <th colspan="3">Temp</th>
-              </tr>
-              <tr>
-                <!-- Single-Sum -->
-                <th>TF1</th><th>HT</th><th>HR</th>
-                <!-- Pair-Comp -->
-                <th>TF1</th><th>HT</th><th>HR</th>
-                <!-- Multi-Comp -->
-                <th>TF1</th><th>HT</th><th>HR</th>
-                <!-- Enum -->
-                <th>TF1</th><th>HT</th><th>HR</th>
-                <!-- Temp -->
-                <th>TF1</th><th>HT</th><th>HR</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="text-align: left;">Vanilla RAG</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">LightRAG-Low</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">LightRAG-High</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">LightRAG-Hybrid</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">GraphRAG-Local</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">GraphRAG-Global</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">HippoRAG</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">RAPTOR</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;"><strong>ArchRAG</strong></td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">KET-RAG</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">HiRAG</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-    </div>
-
   </div>
 </section>
 
