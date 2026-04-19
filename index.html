@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ArchRAG</title>
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <!-- MathJax for rendering LaTeX -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Abstractive Document Comprehension: A Comprehensive Benchmark for RAG-based Question Answering</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="mailto:shuwang3@link.cuhk.edu.cn">Shu Wang</a>,</span>
+            <span class="author-block">
+              <a href="mailto:shansongzhou@link.cuhk.edu.cn">Shansong Zhou</a>,</span>
+            <span class="author-block">
+              <a href="mailto:xinyangwang3@link.cuhk.edu.cn">Xinyang Wang</a>,
+            </span>
+            <span class="author-block">
+              <a href="mailto:fangyixiang@cuhk.edu.cn">Yixiang Fang</a>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">School of Data Science,</span>
+            <span class="author-block">The Chinese University of Hong Kong, Shenzhen</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="#"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/xiaojingang12/ADC"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Abstract -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Retrieval-Augmented Generation (RAG) has proven effective in integrating external
+            knowledge into large language models (LLMs) for solving question-answer (QA) tasks.
+            The state-of-the-art RAG approaches often use the graph data as the external data
+            since they capture the rich semantic information and link relationships between entities.
+            However, existing graph-based RAG approaches cannot accurately identify the relevant
+            information from the graph and also consume large numbers of tokens in the online
+            retrieval process. To address these issues, we introduce a novel graph-based RAG
+            approach, called <strong>Attributed Community-based Hierarchical RAG (ArchRAG)</strong>,
+            by augmenting the question using attributed communities, and also introducing a novel
+            LLM-based hierarchical clustering method. To retrieve the most relevant information
+            from the graph for the question, we build a novel hierarchical index structure for
+            the attributed communities and develop an effective online retrieval method.
+            Experimental results demonstrate that ArchRAG outperforms existing methods in terms
+            of both accuracy and token cost.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ADC Dataset -->
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <!-- 大标题 -->
+    <div class="columns is-centered has-text-centered">
+      <h2 class="title is-2">ADC Dataset</h2>
+      
+
+    </div>
+
+    <!-- ───────────── Overview ───────────── -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h4 class="title is-3">Overview</h4>
+
+        <div class="content has-text-justified">
+          <img class="columns is-centered has-text-centered"
+               src="./static/images/alpha.png"
+               alt="ADC Framework" width="95%" style="margin:0 auto">
+          
+
+
+          <p>
+            ADC is a benchmark for <em>abstractive document comprehension</em> in
+            retrieval-augmented question answering. Unlike conventional QA benchmarks that
+            emphasize short answers or extractive evidence lookup, ADC is designed to evaluate
+            whether a RAG system can synthesize information from long documents and produce
+            responses that are coherent, selective, and faithful to the source content. Such
+            questions commonly require document-level summaries, structured comparisons, thematic
+            organization, and temporally grounded synthesis rather than isolated factual snippets.
+            ADC is built over two source domains, academic papers and news documents, and covers
+            five abstractive task types.
+          </p>
+          <p>
+            Formally, ADC consists of a document corpus \(D\) and a set of QA pairs. Each QA
+            pair is represented as \((q, T, H, m)\), where \(q\) is an abstractive question,
+            \(T = \{\tau_1, \tau_2, \cdots, \tau_n\}\) is the reference topic set,
+            \(H = \{h_1, h_2, \cdots, h_k\}\) is the hallucination set, and \(m\) denotes the
+            associated metadata, including the aligned evidence set \(E\), the task type, the
+            retrieval difficulty level, and the source scope. The set \(T\) is constructed from
+            high-level summary signals and used by our reference-based evaluation method to assess
+            answer coverage, while \(H\) records relevant but incorrect topics and is used to
+            assess hallucinated content.
+          </p>
+        </div>
+        
+
+      </div>
+    </div>
+
+    <!-- ───────────── Curation Pipeline ───────────── -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h4 class="title is-3">Curation Pipeline</h4>
+
+        <div class="content has-text-justified">
+          <img class="columns is-centered has-text-centered"
+               src="./static/images/workflow.png"
+               alt="ADC Curation Pipeline" width="95%" style="margin:0 auto">
+          
+
+
+          <p>
+            ADC is constructed through a three-stage curation pipeline, as illustrated above.
+            The pipeline converts heterogeneous source materials into abstractive QA pairs
+            grounded in curated document collections, with reference-backed evidence and
+            comprehensive topic-set answers.
+          </p>
+
+          <ul>
+            <!-- Step 1 -->
+            <li>
+              <b>Step 1: Data Collection.</b>
+              Original documents are collected from OpenReview, focusing on ICLR 2023–2025,
+              together with the tagged corpus of publications of Epstein et al., and news articles
+              downloaded through the
+              <a href="https://mediastack.com/" target="_blank">mediastack API</a>,
+              yielding 700+ paper documents and 1,500+ news articles.
+              4,700+ comments are gathered separately from OpenReview reviews for ICLR papers
+              (including reviewer comments: summary, strengths, and weaknesses), tags from the
+              corpus of publications of Epstein et al., and metadata associated with the mediastack
+              news records.
+              
+
+
+              We then perform <em>content extraction</em> on both the original documents and the
+              matched comments. Specifically, for PDF documents, we use MinerU to parse the
+              document text, whereas for HTML documents, we extract the page content directly.
+              We finally align each comment with its corresponding source document and merge all
+              documents into a corpus \(D\).
+            </li>
+
+            <!-- Step 2 -->
+            <li>
+              <b>Step 2: QA Pairs Generation.</b>
+              We use the processed materials, along with <em>task-specific guidance</em>, to
+              generate initial QA pairs with an LLM. We use GPT-4o throughout the ADC curation
+              pipeline for generation and refinement. The LLM input includes the task guidance,
+              the matched comment text, the content of the original documents, and a small number
+              of task-specific examples. Each question \(q\) is required to match the target task,
+              and its answer \(T\) is represented as a <em>topic set</em> extracted from matched
+              comments, tags, and other summary-like context aligned to the source documents,
+              with 11.35 topics on average.
+              
+
+
+              We design 5 common abstractive task types, including
+              <b>summarization</b>, <b>pair comparison</b>, <b>multi-target comparison</b>,
+              <b>enumeration</b>, and <b>temporal reasoning</b>,
+              and instantiate a different prompt template for each type.
+            </li>
+
+            <!-- Step 3 -->
+            <li>
+              <b>Step 3: QA Pairs Refinement.</b>
+              We refine the generated question and the topic-set answer separately.
+              <ul>
+                <li>
+                  <b>(1) Question refinement.</b>
+                  We perform <em>evidence alignment</em> by checking whether the question can be
+                  answered from the selected evidence documents alone. To do so, we retrieve 10
+                  related but non-evidence documents as probes and use an LLM to judge whether the
+                  question depends on information outside the designated evidence scope. We then
+                  revise the <em>question intent</em>, enforce consistency with the assigned task
+                  type, and, for comparison questions, make the comparison dimension explicit.
+                </li>
+                <li>
+                  <b>(2) Answer refinement.</b>
+                  We first perform topic enrichment: we retrieve 5 similar questions to obtain
+                  candidate supplemental topics, then use an LLM to judge — based on the original
+                  question, the original evidence, and the matched comment — whether each candidate
+                  topic should be included in \(T\). Accepted topics are added to \(T\), while
+                  rejected topics are recorded in the <em>hallucination set</em> \(H\) for later
+                  evaluation. We next perform <em>deduplication</em> on \(T\) by using an LLM to
+                  merge or remove repeated and semantically equivalent topics on the enriched topic
+                  set. This stage turns model-generated drafts into curated benchmark samples.
+                  After manual review and filtering, we obtain the final ADC dataset.
+                </li>
+              </ul>
+            </li>
+          </ul>
+          
+
+        </div>
+        
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Experiments -->
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <!-- 大标题 -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-2">Experiments</h2>
+      </div>
+    </div>
+
+    <!-- ───────────── Table 1: Retrieval Settings ───────────── -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h3 class="title is-4">Performance under Retrieval Settings</h3>
+        <div class="content has-text-justified">
+          <p>
+            Performance comparison of representative RAG methods on ADC under the three retrieval
+            settings and their overall averages. TF1, HT, and HR denote
+            \(\text{T-F1}\), \(H_{\mathrm{topic}}\), and \(H_{\mathrm{resp}}\), respectively.
+            The best and second-best results are marked in <strong>bold</strong> and
+            <u>underlined</u>, respectively.
+          </p>
+        </div>
+
+        <!-- 横向滚动容器，适配窄屏 -->
+        <div style="overflow-x: auto;">
+          <table class="table is-bordered is-striped is-hoverable is-fullwidth"
+                 style="text-align: center; font-size: 0.9rem; white-space: nowrap;">
+            <thead>
+              <tr>
+                <th rowspan="2" style="vertical-align: middle; text-align: left;">Method</th>
+                <th colspan="3">Simple</th>
+                <th colspan="3">Middle</th>
+                <th colspan="3">Hard</th>
+                <th colspan="3">Overall</th>
+              </tr>
+              <tr>
+                <!-- Simple -->
+                <th>TF1</th><th>HT</th><th>HR</th>
+                <!-- Middle -->
+                <th>TF1</th><th>HT</th><th>HR</th>
+                <!-- Hard -->
+                <th>TF1</th><th>HT</th><th>HR</th>
+                <!-- Overall -->
+                <th>TF1</th><th>HT</th><th>HR</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- 每行格式：方法名 + 12 个数值格 -->
+              <tr>
+                <td style="text-align: left;">Vanilla RAG</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">LightRAG-Low</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">LightRAG-High</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">LightRAG-Hybrid</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">GraphRAG-Local</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">GraphRAG-Global</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">HippoRAG</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">RAPTOR</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;"><strong>ArchRAG</strong></td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">KET-RAG</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">HiRAG</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────────── Table 2: Task Types ───────────── -->
+    <div class="columns is-centered" style="margin-top: 2rem;">
+      <div class="column is-full-width">
+        <h3 class="title is-4">Performance across Task Types</h3>
+        <div class="content has-text-justified">
+          <p>
+            Performance comparison of representative RAG methods on ADC across the five task
+            types, denoted by <span style="font-variant: small-caps;">Single-Sum</span>,
+            <span style="font-variant: small-caps;">Pair-Comp</span>,
+            <span style="font-variant: small-caps;">Multi-Comp</span>,
+            <span style="font-variant: small-caps;">Enum</span>, and
+            <span style="font-variant: small-caps;">Temp</span>.
+            TF1, HT, and HR denote \(\text{T-F1}\), \(H_{\mathrm{topic}}\), and
+            \(H_{\mathrm{resp}}\), respectively.
+            The best and second-best results are marked in <strong>bold</strong> and
+            <u>underlined</u>, respectively.
+          </p>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="table is-bordered is-striped is-hoverable is-fullwidth"
+                 style="text-align: center; font-size: 0.9rem; white-space: nowrap;">
+            <thead>
+              <tr>
+                <th rowspan="2" style="vertical-align: middle; text-align: left;">Method</th>
+                <th colspan="3">Single-Sum</th>
+                <th colspan="3">Pair-Comp</th>
+                <th colspan="3">Multi-Comp</th>
+                <th colspan="3">Enum</th>
+                <th colspan="3">Temp</th>
+              </tr>
+              <tr>
+                <!-- Single-Sum -->
+                <th>TF1</th><th>HT</th><th>HR</th>
+                <!-- Pair-Comp -->
+                <th>TF1</th><th>HT</th><th>HR</th>
+                <!-- Multi-Comp -->
+                <th>TF1</th><th>HT</th><th>HR</th>
+                <!-- Enum -->
+                <th>TF1</th><th>HT</th><th>HR</th>
+                <!-- Temp -->
+                <th>TF1</th><th>HT</th><th>HR</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="text-align: left;">Vanilla RAG</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">LightRAG-Low</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">LightRAG-High</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">LightRAG-Hybrid</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">GraphRAG-Local</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">GraphRAG-Global</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">HippoRAG</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">RAPTOR</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;"><strong>ArchRAG</strong></td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">KET-RAG</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+              <tr>
+                <td style="text-align: left;">HiRAG</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+                <td>-</td><td>-</td><td>-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- BibTeX -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{adc_benchmark_2026,
+  title   = {Abstractive Document Comprehension: A Comprehensive Benchmark for RAG-based Question Answering},
+  author  = {TBD},
+  journal = {arXiv},
+  year    = {2026}
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered">
+          <p>
+            This website is licensed under a
+            <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+              Creative Commons Attribution-ShareAlike 4.0 International License
+            </a>.
+            The source code is based on the
+            <a href="https://nerfies.github.io/">Nerfies</a> project page.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+</body>
+</html>
