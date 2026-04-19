@@ -1,6 +1,6 @@
 # Abstractive Document Comprehension: A Comprehensive Benchmark for RAG-based Question Answering
 
-This is the repository that contains source code for the [ADC benchmark website](https://nerfies.github.io).
+This is the repository that contains source code for the [ADC benchmark website](https://xinyangsally.github.io/adc-benchmark).
 
 If you use ADC benchmark in your project, please kindly cite:
 ```
