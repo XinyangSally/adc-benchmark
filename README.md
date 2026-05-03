@@ -1,4 +1,4 @@
-# Abstractive Document Comprehension: A Comprehensive Benchmark for RAG-based Question Answering
+# AURA-QA: A Benchmark for Abstract Query Answering over Documents
 
 This is the repository that contains source code for the [AURA-QA website](https://xinyangsally.github.io/adc-benchmark).
 
