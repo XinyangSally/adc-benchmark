@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Abstractive Document Comprehension: A Comprehensive Benchmark for RAG-based Question Answering</title>
+  <title>AURA-QA</title>
 
   <link rel="stylesheet" href="./static/css/bulma.min.css">
   <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
@@ -24,6 +24,9 @@
   <script id="MathJax-script" async
           src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
+<style>
+  .is-best { background-color: #fff9c4 !important; font-weight: bold; }
+</style>
 <body>
 
 <section class="hero">
@@ -31,7 +34,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">Abstractive Document Comprehension: A Comprehensive Benchmark for RAG-based Question Answering</h1>
+          <h1 class="title is-1 publication-title">AURA-QA: A Benchmark for Abstract Query Answering over Documents</h1>
           <div class="is-size-5 publication-authors">
             <span class="author-block">
               <a href="mailto:shuwang3@link.cuhk.edu.cn">Shu Wang</a>,</span>
@@ -74,7 +77,7 @@
               </span>
               <!-- Data Link. -->
               <span class="link-block">
-                <a href="#"
+                <a href="https://huggingface.co/datasets/sam234990/ADC"
                   class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                     <i class="fas fa-database"></i>
@@ -98,20 +101,25 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            Retrieval-Augmented Generation (RAG) has proven effective in integrating external
-            knowledge into large language models (LLMs) for solving question-answer (QA) tasks.
-            The state-of-the-art RAG approaches often use the graph data as the external data
-            since they capture the rich semantic information and link relationships between entities.
-            However, existing graph-based RAG approaches cannot accurately identify the relevant
-            information from the graph and also consume large numbers of tokens in the online
-            retrieval process. To address these issues, we introduce a novel graph-based RAG
-            approach, called <strong>Attributed Community-based Hierarchical RAG (ArchRAG)</strong>,
-            by augmenting the question using attributed communities, and also introducing a novel
-            LLM-based hierarchical clustering method. To retrieve the most relevant information
-            from the graph for the question, we build a novel hierarchical index structure for
-            the attributed communities and develop an effective online retrieval method.
-            Experimental results demonstrate that ArchRAG outperforms existing methods in terms
-            of both accuracy and token cost.
+            Document-level question answering (QA) increasingly includes abstract queries, where systems
+            synthesize information scattered across long or multiple documents into coherent answers.
+            However, this setting is still poorly supported by existing benchmarks and evaluation protocols,
+            which often lack stable abstract references or rely on coarse similarity metrics and unstable
+            head-to-head comparison. To alleviate this issue, we introduce <strong>AURA-QA</strong>,
+            short for <strong>A</strong>bstract q<strong>U</strong>ery answering with <strong>R</strong>eference-based 
+            <strong>A</strong>ssessment,
+            a benchmark for abstract query answering over documents.
+          </p>
+          <p>
+            AURA-QA contains 869 QA pairs over academic papers and news documents, covering five abstract 
+            task types and three controlled retrieval scopes. Each instance is paired with structured reference 
+            targets, including reference topic sets, hallucination-related topics, and aligned evidence. 
+            Building on these references, AURA-QA assesses whether answers cover required key points and 
+            avoid unsupported content by directly scoring topic coverage and hallucinated content,
+            enabling scalable evaluation without exhaustive head-to-head comparisons.
+            Experiments with representative Retrieval-Augmented Generation (RAG) methods spanning vanilla, 
+            graph-based, and hierarchical retrieval settings show that AURA-QA provides reference-grounded 
+            diagnostics for coverage, hallucination, and retrieval-scope robustness.
           </p>
         </div>
       </div>
@@ -126,7 +134,7 @@
 
     <!-- 大标题 -->
     <div class="columns is-centered has-text-centered">
-      <h2 class="title is-2">ADC Benchmark</h2>
+      <h2 class="title is-2">AURA-QA Benchmark</h2>
     </div>
 
     <!-- ───────────── Overview ───────────── -->
@@ -137,28 +145,29 @@
         <div class="content has-text-justified">
           <img class="columns is-centered has-text-centered"
               src="./static/images/alpha.png"
-              alt="ADC Framework" width="95%" style="margin:0 auto">
+              alt="AURA-QA Framework" width="95%" style="margin:0 auto">
 
           <p>
-            ADC is a benchmark for <em>abstractive document comprehension</em> in
-            retrieval-augmented question answering. Unlike conventional QA benchmarks that
-            emphasize short answers or extractive evidence lookup, ADC is designed to evaluate
-            whether a RAG system can synthesize information from long documents and produce
-            responses that are coherent, selective, and faithful to the source content. Such
-            questions commonly require document-level summaries, structured comparisons, thematic
-            organization, and temporally grounded synthesis rather than isolated factual snippets.
-            ADC is built over two source domains, academic papers and news documents, and covers
-            five abstractive task types.
+            AURA-QA is a benchmark for abstract query answering over documents, with a focus on evaluating RAG methods.
+            Unlike conventional QA benchmarks that emphasize short answers or extractive evidence lookup,
+            AURA-QA is designed to evaluate whether a RAG system can synthesize information from long documents
+            and produce responses that are coherent, selective, and faithful to the source content.
+            Such questions commonly require document-level summaries, structured comparisons, thematic organization,
+            and temporally grounded synthesis rather than isolated factual snippets.
+            AURA-QA is built over two source domains, namely academic papers and news documents,
+            and covers five abstract task types.
           </p>
+
           <p>
-            Formally, ADC consists of a document corpus \(D\) and a set of QA pairs. Each QA
-            pair is represented as \((q, T, H, m)\), where \(q\) is an abstractive question,
+            Formally, AURA-QA consists of a document corpus \(D\) and a set of QA pairs.
+            Each QA pair is represented as \((q, T, H, m)\), where \(q\) is an abstract question,
             \(T = \{\tau_1, \tau_2, \cdots, \tau_n\}\) is the reference topic set,
-            \(H = \{h_1, h_2, \cdots, h_k\}\) is the hallucination set, and \(m\) denotes the
-            associated metadata, including the aligned evidence set \(E\), the task type, the
-            retrieval difficulty level, and the source scope. The set \(T\) is constructed from
-            high-level summary signals and used by our reference-based evaluation method to assess
-            answer coverage, while \(H\) records relevant but incorrect topics and is used to
+            \(H = \{h_1, h_2, \cdots, h_k\}\) is the hallucination set, and \(m\) denotes the associated metadata,
+            including the aligned evidence set \(E\), the task type, and the retrieval scope.
+            Figure 1 provides an example of this representation, showing the question, reference topic set,
+            hallucination set, and metadata of a QA pair.
+            The set \(T\) is constructed from high-level summary signals and used by our reference-based evaluation
+            method to assess answer coverage, while \(H\) records relevant but incorrect topics and is used to
             assess hallucinated content.
           </p>
         </div>
@@ -170,36 +179,32 @@
     <!-- ───────────── Curation Pipeline ───────────── -->
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h4 class="title is-3">Curation Pipeline</h4>
+        <h4 class="title is-3">Construction Pipeline</h4>
 
         <div class="content has-text-justified">
           <img class="columns is-centered has-text-centered"
               src="./static/images/workflow.png"
-              alt="ADC Curation Pipeline" width="95%" style="margin:0 auto">
+              alt="AURA-QA Construction Pipeline" width="95%" style="margin:0 auto">
           <p>
-            ADC is constructed through a three-stage curation pipeline, as illustrated above.
-            The pipeline converts heterogeneous source materials into abstractive QA pairs
-            grounded in curated document collections, with reference-backed evidence and
-            comprehensive topic-set answers.
+            AURA-QA is constructed through a three-stage construction pipeline, as illustrated in above figure.
+            The pipeline converts heterogeneous source materials into abstract QA pairs grounded in curated document collections,
+            with reference-backed evidence and comprehensive topic-set answers.
           </p>
 
           <ul>
             <!-- Step 1 -->
             <li>
               <b>Step 1: Data Collection.</b>
-              Original documents are collected from OpenReview, focusing on ICLR 2023–2025,
-              together with the tagged corpus of publications of Epstein et al., and news articles
-              downloaded through the mediastack API, yielding 700+ paper documents and 1,500+ news articles.
-              4,700+ comments are gathered separately from OpenReview reviews for ICLR papers, tags from the
-              corpus of publications of Epstein et al., and metadata associated with the mediastack
-              news records.
+              Original documents are collected from OpenReview, focusing on ICLR 2023-2025, survey papers from arXiv,
+              the tagged corpus of publications of Epstein et al., and news articles downloaded through the mediastack API,
+              yielding 700+ paper documents and 1,500+ news articles.
             </li>
 
             <!-- Step 2 -->
             <li>
               <b>Step 2: QA Pairs Generation.</b>
               We use the processed materials, along with <em>task-specific guidance</em>, to
-              generate initial QA pairs with an LLM. We use GPT-4o throughout the ADC curation
+              generate initial QA pairs with an LLM. We use GPT-4o throughout the AURA-QA construction
               pipeline for generation and refinement.
             </li>
 
@@ -244,7 +249,7 @@
               <tr>
                 <td>Multi-Comp</td>
                 <td>42</td>
-                <td>59</td>
+                <td>57</td>
                 <td>1,670,693</td>
                 <td>457,473</td>
                 <td>5</td>
@@ -252,7 +257,7 @@
               <tr>
                 <td>Enum</td>
                 <td>150</td>
-                <td>63</td>
+                <td>64</td>
                 <td>1,728,257</td>
                 <td>427,368</td>
                 <td>7</td>
@@ -270,7 +275,7 @@
               <tr>
                 <td><strong>Total</strong></td>
                 <td><strong>869</strong></td>
-                <td><strong>2,096</strong></td>
+                <td><strong>2,095</strong></td>
                 <td><strong>16,080,106</strong></td>
                 <td><strong>347,963</strong></td>
                 <td><strong>54</strong></td>
@@ -299,9 +304,9 @@
         <div class="content has-text-justified">
 
           <p>
-            Our core idea is to evaluate ADC answers in the same spirit as grading a
+            Our core idea is to evaluate AURA-QA answers in the same spirit as grading a
             composition or a reading-comprehension response by checking whether the answer
-            covers the required key points. For ADC, a good answer should cover the
+            covers the required key points. For AURA-QA, a good answer should cover the
             reference topics in \(T\) as completely as possible and avoid hallucinated
             content.
           </p>
@@ -351,119 +356,116 @@
       <div class="column is-full-width">
         <div class="content has-text-justified">
           <p>
-            Performance comparison of representative RAG methods on ADC under the three retrieval
-            settings and their overall averages. TF1, HT, and HR denote
+            Performance comparison of representative RAG methods on AURA-QA under the three retrieval
+            settings and overall. TF1, HT, and HR denote
             \(\text{T-F1}\), \(H_{\mathrm{topic}}\), and \(H_{\mathrm{resp}}\), respectively.
-            The best and second-best results are marked in <strong>bold</strong> and
-            <u>underlined</u>, respectively.
           </p>
         </div>
 
         <!-- 横向滚动容器，适配窄屏 -->
         <div style="overflow-x: auto;">
-          <table class="table is-bordered is-striped is-hoverable is-fullwidth"
-                style="text-align: center; font-size: 0.9rem; white-space: nowrap;">
-            <thead>
-              <tr>
-                <th rowspan="2" style="vertical-align: middle; text-align: left;">Method</th>
-                <th colspan="3">Simple</th>
-                <th colspan="3">Middle</th>
-                <th colspan="3">Hard</th>
-                <th colspan="3">Overall</th>
-              </tr>
-              <tr>
-                <!-- Simple -->
-                <th>TF1</th><th>HT</th><th>HR</th>
-                <!-- Middle -->
-                <th>TF1</th><th>HT</th><th>HR</th>
-                <!-- Hard -->
-                <th>TF1</th><th>HT</th><th>HR</th>
-                <!-- Overall -->
-                <th>TF1</th><th>HT</th><th>HR</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- 每行格式：方法名 + 12 个数值格 -->
-              <tr>
-                <td style="text-align: left;">Vanilla RAG</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">LightRAG-Low</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">LightRAG-High</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">LightRAG-Hybrid</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">GraphRAG-Local</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">GraphRAG-Global</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">HippoRAG</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">RAPTOR</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">ArchRAG</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">KET-RAG</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-              <tr>
-                <td style="text-align: left;">HiRAG</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-                <td>-</td><td>-</td><td>-</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <table class="table is-bordered is-striped is-hoverable is-fullwidth"
+              style="text-align: center; font-size: 0.9rem; white-space: nowrap;">
+          <thead>
+            <tr>
+              <th rowspan="2" style="vertical-align: middle; text-align: left;">Method</th>
+              <th colspan="3">Simple</th>
+              <th colspan="3">Middle</th>
+              <th colspan="3">Hard</th>
+              <th colspan="3">Overall</th>
+            </tr>
+            <tr>
+              <!-- Simple -->
+              <th>TF1</th><th>HT</th><th>HR</th>
+              <!-- Middle -->
+              <th>TF1</th><th>HT</th><th>HR</th>
+              <!-- Hard -->
+              <th>TF1</th><th>HT</th><th>HR</th>
+              <!-- Overall -->
+              <th>TF1</th><th>HT</th><th>HR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align: left;">Vanilla RAG</td>
+              <td>45.0</td><td>15.6</td><td>27.2</td>
+              <td>24.2</td><td>6.8</td><td>12.4</td>
+              <td>23.7</td><td>10.0</td><td>22.6</td>
+              <td>31.0</td><td>10.8</td><td>20.7</td>
+            </tr>
+            <tr>
+              <td style="text-align: left;">LLightRAG</td>
+              <td>55.0</td><td>9.8</td><td>20.7</td>
+              <td>36.7</td><td>15.9</td><td>30.4</td>
+              <td>33.9</td><td>17.9</td><td>37.0</td>
+              <td>41.8</td><td>14.5</td><td>29.4</td>
+            </tr>
+            <tr>
+              <td style="text-align: left;">HiLightRAG</td>
+              <td>54.0</td><td>8.2</td><td>16.7</td>
+              <td>48.4</td><td>12.4</td><td>29.9</td>
+              <td>46.0</td><td>15.4</td><td>31.3</td>
+              <td>49.5</td><td>12.0</td><td>26.0</td>
+            </tr>
+            <tr>
+              <td style="text-align: left;">HyLightRAG</td>
+              <td>40.7</td><td>7.6</td><td>19.5</td>
+              <td>40.0</td><td>13.8</td><td>26.7</td>
+              <td>38.4</td><td>17.5</td><td>34.9</td>
+              <td>39.7</td><td>13.0</td><td>27.0</td>
+            </tr>
+            <tr>
+              <td style="text-align: left;">LGraphRAG</td>
+              <td>57.8</td><td>11.0</td><td>22.3</td>
+              <td>39.3</td><td>11.9</td><td>27.5</td>
+              <td>38.3</td><td>13.9</td><td>27.9</td>
+              <td>45.1</td><td>12.3</td><td>25.9</td>
+            </tr>
+            <tr>
+              <td style="text-align: left;">GGraphRAG</td>
+              <td>23.1</td><td>5.2</td><td>12.7</td>
+              <td>22.5</td><td>7.2</td><td>15.5</td>
+              <td>21.8</td><td>7.7</td><td>17.4</td>
+              <td>22.5</td><td>6.7</td><td>15.2</td>
+            </tr>
+            <tr>
+              <td style="text-align: left;">HippoRAG</td>
+              <td>61.7</td><td>17.3</td><td>35.1</td>
+              <td class="is-best">56.9</td><td>27.4</td><td>45.8</td>
+              <td class="is-best">51.2</td><td>17.5</td><td>35.1</td>
+              <td class="is-best">56.6</td><td>20.0</td><td>38.7</td>
+            </tr>
+            <tr>
+              <td style="text-align: left;">RAPTOR</td>
+              <td>64.0</td><td>16.4</td><td>31.7</td>
+              <td>53.3</td><td>16.6</td><td>37.6</td>
+              <td>52.1</td><td>21.1</td><td>45.5</td>
+              <td>55.3</td><td>18.0</td><td>38.3</td>
+            </tr>
+            <tr>
+              <td style="text-align: left;">ArchRAG</td>
+              <td>55.2</td><td>18.9</td><td>37.5</td>
+              <td>47.6</td><td>20.7</td><td>39.4</td>
+              <td>47.0</td><td>19.3</td><td>37.6</td>
+              <td>49.9</td><td>19.6</td><td>38.2</td>
+            </tr>
+            <tr>
+              <td style="text-align: left;">KET-RAG</td>
+              <td>32.7</td><td class="is-best">4.0</td><td class="is-best">6.2</td>
+              <td>27.8</td><td class="is-best">3.3</td><td class="is-best">6.6</td>
+              <td>12.9</td><td class="is-best">5.6</td><td class="is-best">12.8</td>
+              <td>24.5</td><td class="is-best">4.3</td><td class="is-best">8.5</td>
+            </tr>
+            <tr>
+              <td style="text-align: left;">HiRAG</td>
+              <td class="is-best">68.9</td><td>18.1</td><td>29.2</td>
+              <td>45.2</td><td>13.8</td><td>33.0</td>
+              <td>35.7</td><td>13.4</td><td>34.0</td>
+              <td>49.9</td><td>15.1</td><td>32.1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       </div>
     </div>
   </div>
@@ -473,8 +475,8 @@
 <section class="section" id="BibTeX">
   <div class="container is-max-desktop content">
     <h2 class="title">BibTeX</h2>
-    <pre><code>@article{adc_benchmark_2026,
-  title   = {Abstractive Document Comprehension: A Comprehensive Benchmark for RAG-based Question Answering},
+    <pre><code>@article{aura_qa_2026,
+  title   = {AURA-QA: A Benchmark for Abstract Query Answering over Documents},
   author  = {TBD},
   journal = {arXiv},
   year    = {2026}
